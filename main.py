@@ -1,30 +1,19 @@
 import time
 from controller import BeckhoffController
-import states
+from statemachine import SafetyStateMachine, SystemState
 
-controller = BeckhoffController()
+def emergency_handler(reason):
+    print(f"EMERGENCY: {reason}")
 
-try:
-    print("System starting...")
-
-    while True:
-        user_input = input("Type 'arm' or 'off': ")
-
-        if user_input == "arm":
-            states.armed(controller)
-
-        elif user_input == "iso":
-            states.isolate(controller)
-
-        elif user_input == "off":
-            controller.all_off()
-
-        # ALWAYS apply outputs (keeps watchdog happy)
-        controller.apply_outputs()
-
-        time.sleep(0.2)
-
-except KeyboardInterrupt:
-    print("Stopping...")
-
-controller.close()
+if __name__ == "__main__":
+    controller = BeckhoffController()
+    sm = SafetyStateMachine(controller, on_emergency=emergency_handler)
+    print("System started. State machine running. Press Ctrl+C to exit.")
+    try:
+        while True:
+            sm.poll_inputs()
+            print(f"Current state: {sm.state.name}")
+            time.sleep(0.2)
+    except KeyboardInterrupt:
+        print("Exiting...")
+    controller.close()
