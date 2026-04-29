@@ -1,10 +1,10 @@
-
-
 # Import necessary PyQt6 widgets for GUI elements
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFrame
 )
 import sys
+import json
+import os
 
 # Import the BeckhoffController class which handles all communication with the Beckhoff device
 from controller import BeckhoffController
@@ -25,6 +25,10 @@ class IOTestGui(QWidget):
             from PyQt6.QtWidgets import QMessageBox
             QMessageBox.critical(self, "Connection Error", "Could not connect to Beckhoff at 192.168.1.1:502")
 
+        # Load PINS from io_map.json
+        with open(os.path.join(os.path.dirname(__file__), "io_map.json"), "r") as f:
+            PINS = json.load(f)
+
         # Main vertical layout for the window
         layout = QVBoxLayout()
 
@@ -38,7 +42,6 @@ class IOTestGui(QWidget):
 
 
         # --- Row 1: Output controls (named outputs) ---
-        from io_map import PINS
         output_names = [name for name, pin in PINS.items() if pin["type"] == "coil"]
         row1_labels = QHBoxLayout()
         row1_buttons = QHBoxLayout()

@@ -2,8 +2,11 @@
 from pymodbus.client import ModbusTcpClient
 # Import exception for handling connection errors (not used directly here)
 from pymodbus.exceptions import ConnectionException
-# Import the unified PINS mapping
-from io_map import PINS
+# Load PINS from io_map.json
+import json
+import os
+with open(os.path.join(os.path.dirname(__file__), "io_map.json"), "r") as f:
+    PINS = json.load(f)
 
 # --- Optional Helper Classes (not used directly in GUI, but useful for modular code) ---
 

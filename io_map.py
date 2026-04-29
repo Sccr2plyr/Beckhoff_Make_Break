@@ -17,10 +17,10 @@ PINS = {
     # Inputs (discrete inputs)
     "hx460a": {"type": "discrete_input", "address": 0},  # input9
     "hx460b": {"type": "discrete_input", "address": 1},  # input10
-    "input11": {"type": "discrete_input", "address": 2},
-    "input12": {"type": "discrete_input", "address": 3},
-    "input13": {"type": "discrete_input", "address": 4},
-    "input14": {"type": "discrete_input", "address": 5},
+    "input1": {"type": "discrete_input", "address": 2},
+    "input2": {"type": "discrete_input", "address": 3},
+    "input3": {"type": "discrete_input", "address": 4},
+    "input4": {"type": "discrete_input", "address": 5},
     "input15": {"type": "discrete_input", "address": 6},
     "input16": {"type": "discrete_input", "address": 7},
     "input17": {"type": "discrete_input", "address": 8},

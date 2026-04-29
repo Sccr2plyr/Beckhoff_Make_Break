@@ -1,11 +1,16 @@
 import time
 from enum import Enum, auto
 from io_map import PINS
+import json
+import os
 
 class SystemState(Enum):
+    INITIALIZING = auto()
     IDLE = auto()
     RUNNING = auto()
     EMERGENCY_STOP = auto()
+    CAP1_FAULT = auto()
+    CAP2_FAULT = auto()
     # Add more states as needed
 
 class Safety_States:
@@ -108,9 +113,21 @@ def _sleep_with_keepalive(controller, duration_ms, step_ms=1000):
 def off(controller):
     controller.all_off()
 
+# Load emergency config from JSON file
+with open(os.path.join(os.path.dirname(__file__), "emergency_config.json"), "r") as f:
+    emergency_config = json.load(f)
+
 def handle_emergency(controller, reason):
-    controller.all_off()
+    print("--- EMERGENCY HANDLER ---")
+    for pin, value in emergency_config.items():
+        if pin.startswith("output"):
+            try:
+                print(f"Setting {pin} to {value}")
+                controller.set_pin(pin, value)
+            except Exception as e:
+                print(f"ERROR setting {pin} to {value}: {e}")
     print(f"EMERGENCY: {reason}")
+    print("--- END EMERGENCY HANDLER ---")
     # You can add more actions here (e.g., logging, notifications)
 
 def check_emergency_conditions(controller):
@@ -121,6 +138,7 @@ def check_emergency_conditions(controller):
         return "Both HX460A and HX460B are ON"
     # Add more named pin checks here as needed
     return None
+
 
 # Example usage in your state machine or polling loop:
 # reason = check_emergency_conditions(controller)
